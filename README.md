@@ -4,9 +4,15 @@ Multi-agent MCP server that fans out prompts to **Claude**, **Codex**, **Copilot
 
 ## Quickstart (Claude Code)
 
-```bash
-cd mcp-servers && npm install
-# Restart Claude Code — MCP servers auto-start from .mcp.json
+Install as a Claude Code plugin:
+
+```
+/install github.com/federicorinaldi/quorum
+```
+
+Then install the agent CLIs you want to use (see [Prerequisites](#prerequisites)), and run:
+
+```
 /quorum:run review this repo
 ```
 
@@ -34,9 +40,18 @@ No skills, no relay agents, no blind judge — your editor's LLM handles interpr
 
 ## Installation
 
-### Claude Code
+### Claude Code (recommended)
 
-This repo ships pre-configured for Claude Code. The setup consists of:
+Install directly as a plugin:
+
+```
+/install github.com/federicorinaldi/quorum
+```
+
+This sets up everything automatically — MCP servers, relay agents, skills, and permissions. Restart Claude Code after installing.
+
+<details>
+<summary>What gets installed</summary>
 
 - **`.mcp.json`** — 5 MCP servers (4 individual agents + combined quorum)
 - **`settings.json`** — Auto-approve permissions for all agent CLIs and MCP tools
@@ -44,12 +59,20 @@ This repo ships pre-configured for Claude Code. The setup consists of:
 - **`skills/`** — `/quorum:run` (full orchestration) and `/quorum:agent` (single agent)
 - **`quorum.config.json`** — Enable/disable individual agents
 
-Install dependencies and restart:
+</details>
+
+<details>
+<summary>Manual setup (from source)</summary>
+
+Clone the repo and install dependencies:
 
 ```bash
-cd mcp-servers && npm install
+git clone https://github.com/federicorinaldi/quorum.git
+cd quorum/mcp-servers && npm install
 # Restart Claude Code to pick up the MCP servers
 ```
+
+</details>
 
 <details>
 <summary><code>.mcp.json</code></summary>
