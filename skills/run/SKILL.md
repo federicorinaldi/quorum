@@ -34,12 +34,13 @@ The user can invoke `/quorum:run` in several ways:
 - `/quorum:run architecture — should we use X or Y?` — mode and extra context are explicit
 - `/quorum:run` after Claude already produced a plan/implementation — the quorum validates what Claude just said
 
-**Mode detection** — ask the user only if it's genuinely ambiguous. Otherwise infer:
+**Mode detection** — infer automatically, never ask the user to clarify:
 - If the conversation contains a plan, design, or architecture discussion → `architecture`
 - If the conversation contains a diff, PR, or specific code to evaluate → `review`
 - If the user asks to review the whole codebase/repo (no specific diff) → `review-codebase`
 - If the conversation contains an implementation or spec → `implement`
 - If the conversation contains errors, stack traces, or bug reports → `diagnose`
+- If none of the above match → `freeform`
 
 Load the appropriate prompt template from `skills/run/templates/`.
 
@@ -68,6 +69,14 @@ Only produce analysis, review findings, implementation proposals, or recommendat
 ## Step 3: Fan out in parallel
 
 Spawn ONLY the **enabled** agents simultaneously using the Task tool. Do not wait for one before starting another.
+
+**Working directory:** Before spawning agents, determine the absolute path of the current project root (the directory the user is working in). When sending prompts to relay agents, prepend the following line:
+
+```
+WORKDIR: /absolute/path/to/project
+```
+
+This ensures external CLIs run in the correct directory. The relay agents will extract it and pass it as the `workdir` parameter to their MCP tool.
 
 The agent mapping:
 - `claude` → `quorum:claude-agent` (returns plain text directly — no JSON wrapper)

@@ -295,6 +295,7 @@ The skill auto-detects the mode from context. You can also be explicit:
 | `architecture` | Plan, design, or architecture discussion |
 | `implement` | Implementation or spec to validate |
 | `diagnose` | Errors, stack traces, or bug reports |
+| `freeform` | Any prompt that doesn't match the above — forwarded as-is |
 
 Inline flags:
 - `--skip gemini,copilot` — disable specific agents for this run
