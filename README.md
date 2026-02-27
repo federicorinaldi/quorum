@@ -284,6 +284,7 @@ This config applies to both usage paths (Claude Code skills and MCP `quorum_quer
 /quorum:run diagnose this stack trace
 /quorum:run implement the logout flow from the plan above
 /quorum:run review this repo
+/quorum:run what's the best way to handle auth tokens in Next.js?
 ```
 
 The skill auto-detects the mode from context. You can also be explicit:
@@ -295,7 +296,7 @@ The skill auto-detects the mode from context. You can also be explicit:
 | `architecture` | Plan, design, or architecture discussion |
 | `implement` | Implementation or spec to validate |
 | `diagnose` | Errors, stack traces, or bug reports |
-| `freeform` | Any prompt that doesn't match the above — forwarded as-is |
+| `ask` | Any prompt that doesn't match the above — forwarded as-is |
 
 Inline flags:
 - `--skip gemini,copilot` — disable specific agents for this run
@@ -322,6 +323,19 @@ The `quorum_query` tool adds one extra parameter:
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `agents` | string[] | No | Which agents to query (default: all enabled in config) |
+
+Examples — ask your editor's AI to call these directly:
+
+```
+# Query a single agent
+Use the codex_query tool with prompt "Review this function for bugs" and workdir "/path/to/my-project"
+
+# Query all agents in parallel
+Use the quorum_query tool with prompt "What's the best caching strategy for this app?"
+
+# Query specific agents only
+Use the quorum_query tool with prompt "Review the auth module" and agents ["codex", "gemini"]
+```
 
 ## Available MCP tools
 

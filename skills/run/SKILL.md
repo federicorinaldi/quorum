@@ -40,7 +40,7 @@ The user can invoke `/quorum:run` in several ways:
 - If the user asks to review the whole codebase/repo (no specific diff) → `review-codebase`
 - If the conversation contains an implementation or spec → `implement`
 - If the conversation contains errors, stack traces, or bug reports → `diagnose`
-- If none of the above match → `freeform`
+- If none of the above match → `ask`
 
 Load the appropriate prompt template from `skills/run/templates/`.
 
