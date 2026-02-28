@@ -15,12 +15,13 @@ esac
 
 # Auto-install deps (or repair broken node_modules)
 TSX="$DIR/node_modules/.bin/tsx"
-if [ ! -x "$TSX" ]; then
+if ! "$TSX" --version >/dev/null 2>&1; then
+  rm -rf "$DIR/node_modules"
   npm install --prefix "$DIR" --silent >&2
 fi
 
-if [ ! -x "$TSX" ]; then
-  echo "tsx not found at $TSX after npm install" >&2
+if ! "$TSX" --version >/dev/null 2>&1; then
+  echo "tsx broken after npm install" >&2
   exit 1
 fi
 
