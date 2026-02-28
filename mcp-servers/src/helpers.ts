@@ -73,9 +73,7 @@ export const geminiToolAnnotations = {
 export async function validateWorkdir(
   workdir: string | undefined
 ): Promise<string> {
-  if (!workdir) {
-    throw new Error("workdir is required — cannot infer project root from MCP server context");
-  }
+  if (!workdir) return process.cwd();
   if (/\0/.test(workdir)) {
     throw new Error("workdir must not contain null bytes");
   }

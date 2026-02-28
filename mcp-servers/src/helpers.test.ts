@@ -32,10 +32,9 @@ import { z } from "zod";
 // ── validateWorkdir ──────────────────────────────────────────────────────────
 
 describe("validateWorkdir", () => {
-  it("throws when workdir is undefined", async () => {
-    await expect(validateWorkdir(undefined)).rejects.toThrow(
-      "workdir is required"
-    );
+  it("returns cwd when workdir is undefined", async () => {
+    const result = await validateWorkdir(undefined);
+    expect(result).toBe(process.cwd());
   });
 
   it("resolves a valid directory", async () => {

@@ -3,7 +3,7 @@ name: run
 description: Fan out a task to Claude, Codex, Copilot, Cursor, and Gemini in parallel, then reconcile their outputs into a high-confidence recommendation. Use for planning, code review, implementation validation, bug diagnosis, and architecture decisions — not for quick changes.
 disable-model-invocation: true
 context: fork
-allowed-tools: Task, Read, mcp__quorum-codex__codex_query, mcp__quorum-copilot__copilot_query, mcp__quorum-cursor__cursor_query, mcp__quorum-gemini__gemini_query
+allowed-tools: Task, Read, mcp__quorum__quorum_query
 ---
 
 # /quorum:run Skill
@@ -68,19 +68,18 @@ Only produce analysis, review findings, implementation proposals, or recommendat
 
 ## Step 3: Fan out in parallel
 
-Dispatch ALL enabled agents simultaneously. Do not wait for one before starting another.
+Dispatch all enabled agents simultaneously. Determine the absolute path of the current project root first.
 
-**Working directory:** Before dispatching, determine the absolute path of the current project root (the directory the user is working in). This is **required** — the MCP tools will reject calls without it.
+**External agents (codex, copilot, cursor, gemini):** Make a SINGLE call to `mcp__quorum__quorum_query` with:
+- `prompt` — the prepared prompt from Step 2
+- `workdir` — the absolute project root path
+- `agents` — (optional) list of enabled external agents, if not all 4 are enabled
 
-**External agents (codex, copilot, cursor, gemini):** Call their MCP tools directly with the `workdir` parameter:
-- `codex` → call `mcp__quorum-codex__codex_query` with `prompt` and `workdir`
-- `copilot` → call `mcp__quorum-copilot__copilot_query` with `prompt` and `workdir`
-- `cursor` → call `mcp__quorum-cursor__cursor_query` with `prompt` and `workdir`
-- `gemini` → call `mcp__quorum-gemini__gemini_query` with `prompt` and `workdir`
+This one call fans out to all external agents in parallel and returns all results. Do NOT call individual agent tools or spawn relay agents — use `quorum_query`.
 
-**Claude agent:** Spawn via the Task tool as `quorum:claude-agent` — this gives Claude a separate participant context so its output can be judged blindly alongside the others.
+**Claude agent:** Spawn via the Task tool as `quorum:claude-agent` with the same prompt. This gives Claude a separate participant context so its output can be judged blindly.
 
-Wait for all to complete (or timeout at 120s). Proceed if at least 2 agents return successfully.
+Launch both the `quorum_query` call and the `claude-agent` Task simultaneously. Wait for all to complete (or timeout at 120s). Proceed if at least 2 agents return successfully.
 
 ## Step 4: Collect and parse results
 

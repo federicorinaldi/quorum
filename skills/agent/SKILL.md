@@ -3,7 +3,7 @@ name: agent
 description: Run a single quorum agent (claude, codex, copilot, cursor, or gemini) with a prompt. Usage - /quorum:agent <agent> <prompt>
 disable-model-invocation: true
 context: fork
-allowed-tools: Task, mcp__quorum-codex__codex_query, mcp__quorum-copilot__copilot_query, mcp__quorum-cursor__cursor_query, mcp__quorum-gemini__gemini_query
+allowed-tools: Task, mcp__quorum-codex__codex_query, mcp__quorum-copilot__copilot_query, mcp__quorum-cursor__cursor_query, mcp__quorum-gemini__gemini_query, mcp__quorum__quorum_query
 ---
 
 # /quorum:agent Skill
@@ -49,7 +49,7 @@ Only produce analysis or recommendations as plain text.
 
 ### All mode
 
-Dispatch all enabled agents in parallel (like `/quorum:run` but skip reconciliation). Use the same direct MCP tool calls for external agents and Task tool for Claude.
+Call `mcp__quorum__quorum_query` with the prompt and `workdir` to fan out to all external agents in parallel, and spawn `quorum:claude-agent` via Task tool simultaneously. Skip reconciliation — just report raw results.
 
 ## Output format
 
