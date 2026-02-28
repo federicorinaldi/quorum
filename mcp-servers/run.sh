@@ -13,14 +13,14 @@ case "${1:-}" in
     ;;
 esac
 
-# Auto-install deps on first run
-if [ ! -d "$DIR/node_modules" ]; then
+# Auto-install deps (or repair broken node_modules)
+TSX="$DIR/node_modules/.bin/tsx"
+if [ ! -x "$TSX" ]; then
   npm install --prefix "$DIR" --silent >&2
 fi
 
-TSX="$DIR/node_modules/.bin/tsx"
 if [ ! -x "$TSX" ]; then
-  echo "tsx not found at $TSX — run npm install first" >&2
+  echo "tsx not found at $TSX after npm install" >&2
   exit 1
 fi
 
