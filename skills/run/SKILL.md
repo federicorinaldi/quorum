@@ -68,24 +68,19 @@ Only produce analysis, review findings, implementation proposals, or recommendat
 
 ## Step 3: Fan out in parallel
 
-Spawn ONLY the **enabled** agents simultaneously using the Task tool. Do not wait for one before starting another.
+Dispatch ALL enabled agents simultaneously. Do not wait for one before starting another.
 
-**Working directory:** Before spawning agents, determine the absolute path of the current project root (the directory the user is working in). When sending prompts to relay agents, prepend the following line:
+**Working directory:** Before dispatching, determine the absolute path of the current project root (the directory the user is working in). This is **required** — the MCP tools will reject calls without it.
 
-```
-WORKDIR: /absolute/path/to/project
-```
+**External agents (codex, copilot, cursor, gemini):** Call their MCP tools directly with the `workdir` parameter:
+- `codex` → call `mcp__quorum-codex__codex_query` with `prompt` and `workdir`
+- `copilot` → call `mcp__quorum-copilot__copilot_query` with `prompt` and `workdir`
+- `cursor` → call `mcp__quorum-cursor__cursor_query` with `prompt` and `workdir`
+- `gemini` → call `mcp__quorum-gemini__gemini_query` with `prompt` and `workdir`
 
-This ensures external CLIs run in the correct directory. The relay agents will extract it and pass it as the `workdir` parameter to their MCP tool.
+**Claude agent:** Spawn via the Task tool as `quorum:claude-agent` — this gives Claude a separate participant context so its output can be judged blindly alongside the others.
 
-The agent mapping:
-- `claude` → `quorum:claude-agent` (returns plain text directly — no JSON wrapper)
-- `codex` → `quorum:codex-agent`
-- `copilot` → `quorum:copilot-agent`
-- `cursor` → `quorum:cursor-agent`
-- `gemini` → `quorum:gemini-agent`
-
-Wait for all tasks to complete (or timeout at 120s). Proceed if at least 2 agents return successfully.
+Wait for all to complete (or timeout at 120s). Proceed if at least 2 agents return successfully.
 
 ## Step 4: Collect and parse results
 

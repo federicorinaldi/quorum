@@ -32,13 +32,14 @@ import { z } from "zod";
 // ── validateWorkdir ──────────────────────────────────────────────────────────
 
 describe("validateWorkdir", () => {
-  it("returns cwd when workdir is undefined", async () => {
-    const result = await validateWorkdir(undefined);
-    expect(result).toBe(process.cwd());
+  it("throws when workdir is undefined", async () => {
+    await expect(validateWorkdir(undefined)).rejects.toThrow(
+      "workdir is required"
+    );
   });
 
-  it("resolves a valid directory under cwd", async () => {
-    const dir = await mkdtemp(join(process.cwd(), ".helpers-test-"));
+  it("resolves a valid directory", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "helpers-test-"));
     const real = await realpath(dir);
     try {
       const result = await validateWorkdir(dir);
@@ -481,17 +482,11 @@ describe("validateWorkdir null bytes", () => {
   });
 });
 
-// ── validateWorkdir root restriction ────────────────────────────────────────
+// ── validateWorkdir accepts any valid directory ─────────────────────────────
 
-describe("validateWorkdir root restriction", () => {
-  it("rejects workdir outside cwd", async () => {
-    await expect(validateWorkdir("/etc")).rejects.toThrow(
-      "workdir must be under the current working directory"
-    );
-  });
-
-  it("accepts workdir under cwd", async () => {
-    const dir = await mkdtemp(join(process.cwd(), ".test-workdir-"));
+describe("validateWorkdir accepts any valid directory", () => {
+  it("accepts directory outside cwd (no containment restriction)", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "workdir-outside-"));
     const real = await realpath(dir);
     try {
       const result = await validateWorkdir(dir);

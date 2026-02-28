@@ -31,12 +31,7 @@ Examples:
 
 ### Single agent mode (claude/codex/copilot/cursor/gemini)
 
-Spawn exactly ONE subagent using the Task tool:
-- `claude` → `quorum:claude-agent` (returns plain text directly — no JSON wrapper)
-- `codex` → `quorum:codex-agent`
-- `copilot` → `quorum:copilot-agent`
-- `cursor` → `quorum:cursor-agent`
-- `gemini` → `quorum:gemini-agent`
+Determine the absolute path of the current project root (the directory the user is working in).
 
 Prepend to the prompt:
 ```
@@ -44,9 +39,17 @@ You are operating in READ-ONLY analysis mode. Do NOT write files, execute comman
 Only produce analysis or recommendations as plain text.
 ```
 
+**External agents (codex, copilot, cursor, gemini):** Call the MCP tool directly with the `workdir` parameter:
+- `codex` → call `mcp__quorum-codex__codex_query` with `prompt` and `workdir`
+- `copilot` → call `mcp__quorum-copilot__copilot_query` with `prompt` and `workdir`
+- `cursor` → call `mcp__quorum-cursor__cursor_query` with `prompt` and `workdir`
+- `gemini` → call `mcp__quorum-gemini__gemini_query` with `prompt` and `workdir`
+
+**Claude agent:** Spawn via Task tool as `quorum:claude-agent`.
+
 ### All mode
 
-Spawn all enabled subagents in parallel (like `/quorum:run` but skip reconciliation).
+Dispatch all enabled agents in parallel (like `/quorum:run` but skip reconciliation). Use the same direct MCP tool calls for external agents and Task tool for Claude.
 
 ## Output format
 

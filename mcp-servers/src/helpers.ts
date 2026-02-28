@@ -73,7 +73,9 @@ export const geminiToolAnnotations = {
 export async function validateWorkdir(
   workdir: string | undefined
 ): Promise<string> {
-  if (!workdir) return process.cwd();
+  if (!workdir) {
+    throw new Error("workdir is required — cannot infer project root from MCP server context");
+  }
   if (/\0/.test(workdir)) {
     throw new Error("workdir must not contain null bytes");
   }
@@ -82,11 +84,6 @@ export async function validateWorkdir(
   const info = await stat(real);
   if (!info.isDirectory()) {
     throw new Error(`workdir is not a directory: ${real}`);
-  }
-  const cwd = await realpath(process.cwd());
-  const prefix = cwd.endsWith(sep) ? cwd : cwd + sep;
-  if (real !== cwd && !real.startsWith(prefix)) {
-    throw new Error(`workdir must be under the current working directory: ${real} is outside ${cwd}`);
   }
   return real;
 }
