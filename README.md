@@ -258,7 +258,7 @@ You don't need all of them — Quorum works with as few as 2 agents. Disable any
 
 ## Agent configuration
 
-Edit `quorum.config.json` in the repo root to enable/disable agents:
+Edit `quorum.config.json` in the repo root to enable/disable agents and set a global timeout:
 
 ```json
 {
@@ -268,9 +268,15 @@ Edit `quorum.config.json` in the repo root to enable/disable agents:
     "copilot": true,
     "cursor": true,
     "gemini": true
-  }
+  },
+  "timeout_ms": 300000
 }
 ```
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `agents` | object | all enabled | Set an agent to `false` to disable it |
+| `timeout_ms` | number | none (run to completion) | Kill agent processes after this many milliseconds |
 
 This config applies to both usage paths (Claude Code skills and MCP `quorum_query` tool).
 
@@ -316,7 +322,6 @@ Call tools directly from your editor's AI chat. Each tool accepts:
 |-----------|------|----------|-------------|
 | `prompt` | string | Yes | The prompt to send |
 | `workdir` | string | No | Working directory (defaults to cwd) |
-| `timeout_ms` | number | No | Timeout in ms (default: 120000, max: 600000) |
 
 The `quorum_query` tool adds one extra parameter:
 
@@ -438,7 +443,7 @@ Run the verify command from the prerequisites table (e.g., `codex --version`). I
 Disable the rate-limited agent in `quorum.config.json` by setting it to `false`, or use `--skip <agent>` for a single run.
 
 **Timeouts**
-Increase the `timeout_ms` parameter (default: 120000ms, max: 600000ms). For MCP clients, pass it directly in the tool call. For Claude Code, the skill handles timeouts automatically.
+By default, agents run to completion with no timeout. To set a global timeout, add `"timeout_ms": 300000` to `quorum.config.json`.
 
 **Agent returns empty or error response**
 Run `/quorum:agent <agent> say hello` in Claude Code (or call `*_query` with a simple prompt in other editors) to isolate which agent is failing.
