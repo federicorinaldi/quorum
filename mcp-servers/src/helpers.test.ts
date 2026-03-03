@@ -15,6 +15,7 @@ import {
   runGemini,
   runQuorum,
   getEnabledAgents,
+  getConfig,
   isRateLimited,
   toolSchema,
   quorumToolSchema,
@@ -149,10 +150,14 @@ describe("formatError", () => {
 describe("toolSchema", () => {
   const schema = z.object(toolSchema);
 
-  it("accepts a valid prompt without timeout_ms", () => {
+  it("accepts a valid prompt", () => {
     const result = schema.parse({ prompt: "hello" });
     expect(result.prompt).toBe("hello");
-    expect(result.timeout_ms).toBeUndefined();
+  });
+
+  it("does not include timeout_ms field", () => {
+    const keys = Object.keys(toolSchema);
+    expect(keys).not.toContain("timeout_ms");
   });
 
   it("rejects missing prompt", () => {
@@ -161,27 +166,6 @@ describe("toolSchema", () => {
 
   it("rejects empty prompt", () => {
     expect(() => schema.parse({ prompt: "" })).toThrow();
-  });
-
-  it("accepts a valid timeout_ms", () => {
-    const result = schema.parse({ prompt: "hi", timeout_ms: 5000 });
-    expect(result.timeout_ms).toBe(5000);
-  });
-
-  it("accepts large timeout_ms values", () => {
-    const result = schema.parse({ prompt: "hi", timeout_ms: 700_000 });
-    expect(result.timeout_ms).toBe(700_000);
-  });
-
-  it("rejects non-positive timeout_ms", () => {
-    expect(() => schema.parse({ prompt: "hi", timeout_ms: 0 })).toThrow();
-    expect(() => schema.parse({ prompt: "hi", timeout_ms: -1 })).toThrow();
-  });
-
-  it("rejects non-integer timeout_ms", () => {
-    expect(() =>
-      schema.parse({ prompt: "hi", timeout_ms: 1000.5 })
-    ).toThrow();
   });
 
   it("rejects prompt exceeding MAX_PROMPT_LENGTH", () => {
@@ -737,6 +721,86 @@ describe("getEnabledAgents", () => {
       );
       const agents = await getEnabledAgents(dir);
       expect(agents).toEqual([...EXTERNAL_AGENT_NAMES]);
+    } finally {
+      await rm(dir, { recursive: true });
+    }
+  });
+});
+
+// ── getConfig tests ──────────────────────────────────────────────────────────
+
+describe("getConfig", () => {
+  it("returns defaults when config file is missing", async () => {
+    const config = await getConfig("/nonexistent-path-xyz");
+    expect(config.agents).toEqual([...EXTERNAL_AGENT_NAMES]);
+    expect(config.timeout_ms).toBeUndefined();
+  });
+
+  it("reads timeout_ms from config", async () => {
+    const dir = await mkdtemp(join(process.cwd(), ".quorum-test-"));
+    try {
+      await writeFile(
+        join(dir, "quorum.config.json"),
+        JSON.stringify({ agents: { codex: true, copilot: true, cursor: true, gemini: true }, timeout_ms: 300000 })
+      );
+      const config = await getConfig(dir);
+      expect(config.timeout_ms).toBe(300000);
+    } finally {
+      await rm(dir, { recursive: true });
+    }
+  });
+
+  it("ignores invalid timeout_ms values", async () => {
+    const dir = await mkdtemp(join(process.cwd(), ".quorum-test-"));
+    try {
+      // Non-integer
+      await writeFile(join(dir, "quorum.config.json"), JSON.stringify({ timeout_ms: 100.5 }));
+      expect((await getConfig(dir)).timeout_ms).toBeUndefined();
+
+      // Negative
+      await writeFile(join(dir, "quorum.config.json"), JSON.stringify({ timeout_ms: -1000 }));
+      expect((await getConfig(dir)).timeout_ms).toBeUndefined();
+
+      // Zero
+      await writeFile(join(dir, "quorum.config.json"), JSON.stringify({ timeout_ms: 0 }));
+      expect((await getConfig(dir)).timeout_ms).toBeUndefined();
+
+      // String
+      await writeFile(join(dir, "quorum.config.json"), JSON.stringify({ timeout_ms: "5000" }));
+      expect((await getConfig(dir)).timeout_ms).toBeUndefined();
+
+      // Infinity (not representable in JSON, becomes null)
+      await writeFile(join(dir, "quorum.config.json"), JSON.stringify({ timeout_ms: null }));
+      expect((await getConfig(dir)).timeout_ms).toBeUndefined();
+    } finally {
+      await rm(dir, { recursive: true });
+    }
+  });
+
+  it("returns undefined timeout_ms when field is absent", async () => {
+    const dir = await mkdtemp(join(process.cwd(), ".quorum-test-"));
+    try {
+      await writeFile(
+        join(dir, "quorum.config.json"),
+        JSON.stringify({ agents: { codex: true } })
+      );
+      const config = await getConfig(dir);
+      expect(config.timeout_ms).toBeUndefined();
+    } finally {
+      await rm(dir, { recursive: true });
+    }
+  });
+
+  it("reads both agents and timeout_ms together", async () => {
+    const dir = await mkdtemp(join(process.cwd(), ".quorum-test-"));
+    try {
+      await writeFile(
+        join(dir, "quorum.config.json"),
+        JSON.stringify({ agents: { codex: true, copilot: false, cursor: false, gemini: false }, timeout_ms: 5000 })
+      );
+      const config = await getConfig(dir);
+      expect(config.agents).toEqual(["codex"]);
+      expect(config.timeout_ms).toBe(5000);
     } finally {
       await rm(dir, { recursive: true });
     }

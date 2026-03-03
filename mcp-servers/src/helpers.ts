@@ -45,12 +45,6 @@ export type ToolReturn = {
 export const toolSchema = {
   prompt: z.string().min(1).max(MAX_PROMPT_LENGTH).describe("The full prompt to send"),
   workdir: z.string().optional().describe("Working directory for the command"),
-  timeout_ms: z
-    .number()
-    .int()
-    .positive()
-    .optional()
-    .describe("Timeout in milliseconds (omit to let agents run to completion)"),
 };
 
 export const toolAnnotations = {
@@ -550,25 +544,49 @@ export interface QuorumResult {
   error?: string;
 }
 
-export async function getEnabledAgents(cwd: string): Promise<ExternalAgent[]> {
+export interface QuorumConfig {
+  agents: ExternalAgent[];
+  timeout_ms: number | undefined;
+}
+
+export async function getConfig(cwd: string): Promise<QuorumConfig> {
+  const defaults: QuorumConfig = { agents: [...EXTERNAL_AGENT_NAMES], timeout_ms: undefined };
   try {
     const configPath = resolve(cwd, "quorum.config.json");
     const raw = await readFile(configPath, "utf-8");
     const config = JSON.parse(raw);
-    if (!config.agents || typeof config.agents !== "object" || Array.isArray(config.agents)) {
-      return [...EXTERNAL_AGENT_NAMES];
+
+    // Parse agents
+    let agents = defaults.agents;
+    if (config.agents && typeof config.agents === "object" && !Array.isArray(config.agents)) {
+      const enabled = EXTERNAL_AGENT_NAMES.filter(
+        (name) => config.agents[name] !== false
+      );
+      if (enabled.length > 0) agents = enabled;
     }
-    const enabled = EXTERNAL_AGENT_NAMES.filter(
-      (name) => config.agents[name] !== false
-    );
-    return enabled.length > 0 ? enabled : [...EXTERNAL_AGENT_NAMES];
+
+    // Parse timeout_ms
+    let timeout_ms: number | undefined = undefined;
+    if (config.timeout_ms !== undefined) {
+      const val = config.timeout_ms;
+      if (typeof val === "number" && Number.isFinite(val) && Number.isInteger(val) && val > 0) {
+        timeout_ms = val;
+      }
+    }
+
+    return { agents, timeout_ms };
   } catch (err) {
     const isNotFound = err instanceof Error && "code" in err && (err as NodeJS.ErrnoException).code === "ENOENT";
     if (!isNotFound) {
       console.error(`[quorum] Failed to read quorum.config.json: ${err instanceof Error ? err.message : err}`);
     }
-    return [...EXTERNAL_AGENT_NAMES];
+    return defaults;
   }
+}
+
+export async function getEnabledAgents(cwd: string): Promise<ExternalAgent[]> {
+  const config = await getConfig(cwd);
+  return config.agents;
 }
 
 export function isRateLimited(msg: string): boolean {
