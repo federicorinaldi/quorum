@@ -1,8 +1,10 @@
 <p align="center">
-  <img src="assets/logo.svg" width="120" alt="Quorum logo">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/logo-full-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="assets/logo-full-light.svg">
+    <img src="assets/logo-full-light.svg" width="200" alt="Quorum logo">
+  </picture>
 </p>
-
-<h1 align="center">Quorum</h1>
 
 <p align="center">Multi-agent MCP server that fans out prompts to <b>Claude</b>, <b>Codex</b>, <b>Copilot</b>, <b>Cursor</b>, and <b>Gemini</b> in parallel, then reconciles their outputs into a single high-confidence recommendation.</p>
 
