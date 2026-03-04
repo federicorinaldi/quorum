@@ -5,8 +5,8 @@
   "author": {
     "name": "Federico Rinaldi"
   },
-  "homepage": "https://github.com/federicorinaldi/quorum",
-  "repository": "https://github.com/federicorinaldi/quorum",
+  "homepage": "https://github.com/nexusentis/quorum",
+  "repository": "https://github.com/nexusentis/quorum",
   "license": "MIT",
   "keywords": ["multi-agent", "quorum", "code-review", "planning", "architecture", "codex", "copilot", "cursor", "gemini"]
 }

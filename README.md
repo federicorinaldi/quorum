@@ -7,7 +7,7 @@ Multi-agent MCP server that fans out prompts to **Claude**, **Codex**, **Copilot
 Install as a Claude Code plugin:
 
 ```
-/plugin marketplace add federicorinaldi/quorum
+/plugin marketplace add nexusentis/quorum
 /plugin install quorum@quorum-marketplace
 ```
 
@@ -46,7 +46,7 @@ No skills, no relay agents, no blind judge — your editor's LLM handles interpr
 Install directly as a plugin:
 
 ```
-/plugin marketplace add federicorinaldi/quorum
+/plugin marketplace add nexusentis/quorum
 /plugin install quorum@quorum-marketplace
 ```
 
@@ -69,7 +69,7 @@ This sets up everything automatically — MCP servers, relay agents, skills, and
 Clone the repo and install dependencies:
 
 ```bash
-git clone https://github.com/federicorinaldi/quorum.git
+git clone https://github.com/nexusentis/quorum.git
 cd quorum/mcp-servers && npm install
 # Restart Claude Code to pick up the MCP servers
 ```
