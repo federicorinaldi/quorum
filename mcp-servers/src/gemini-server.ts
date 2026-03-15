@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { runGemini, toolSchema, geminiToolAnnotations, getConfig } from "./helpers.js";
+import { runGemini, toolSchema, geminiToolAnnotations } from "./helpers.js";
 
 const server = new McpServer({ name: "quorum-gemini", version: "1.0.0" });
 
@@ -9,10 +9,7 @@ server.tool(
   "Send a prompt to Google Gemini CLI (gemini-3-pro) and return the structured result",
   toolSchema,
   geminiToolAnnotations,
-  async ({ prompt, workdir }) => {
-    const config = await getConfig(workdir || process.cwd());
-    return runGemini(prompt, workdir, config.timeout_ms);
-  }
+  ({ prompt, workdir, timeout_ms }) => runGemini(prompt, workdir, timeout_ms)
 );
 
 async function main() {
