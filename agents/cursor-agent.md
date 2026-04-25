@@ -1,6 +1,6 @@
 ---
 name: cursor-agent
-description: Dispatches a prompt to Cursor CLI (Composer 1.5) via the quorum-cursor MCP server. Returns the raw structured result. Used exclusively by the /quorum skill for parallel fan-out.
+description: Dispatches a prompt to Cursor CLI (Composer 2) via the quorum-cursor MCP server. Returns the raw structured result. Used exclusively by the /quorum skill for parallel fan-out.
 tools: mcp__quorum-cursor__cursor_query
 model: claude-haiku-4-5
 permissionMode: default

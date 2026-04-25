@@ -22,10 +22,10 @@ const ERROR_TRUNCATE_CHARS = 500;
 export const MAX_PROMPT_LENGTH = 100_000;
 
 // Model names
-const MODEL_CODEX = "gpt-5.3-codex";
+const MODEL_CODEX = "gpt-5.5-codex";
 const MODEL_COPILOT = "copilot-claude-sonnet";
-const MODEL_CURSOR = "composer-1.5";
-const MODEL_GEMINI = "gemini-3-pro";
+const MODEL_CURSOR = "composer-2";
+const MODEL_GEMINI = "gemini-3.1-pro-preview";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -322,6 +322,8 @@ export async function runCodex(
       "codex",
       [
         "exec",
+        "-m",
+        MODEL_CODEX,
         "--sandbox",
         "read-only",
         "--",
@@ -503,7 +505,7 @@ export async function runGemini(
     try {
       result = await exec(
         "gemini",
-        ["--yolo", "--output-format", "json", "-p", prompt],
+        ["-m", MODEL_GEMINI, "--yolo", "--output-format", "json", "-p", prompt],
         { cwd, timeout: jsonTimeout }
       );
     } catch (jsonErr) {
@@ -512,12 +514,12 @@ export async function runGemini(
       if (timeout !== undefined) {
         const remaining = (start + timeout) - Date.now();
         if (remaining <= 0) throw new Error(`Gemini timed out (insufficient time for fallback after JSON format failure)`);
-        result = await exec("gemini", ["--yolo", "-p", prompt], {
+        result = await exec("gemini", ["-m", MODEL_GEMINI, "--yolo", "-p", prompt], {
           cwd,
           timeout: remaining,
         });
       } else {
-        result = await exec("gemini", ["--yolo", "-p", prompt], { cwd });
+        result = await exec("gemini", ["-m", MODEL_GEMINI, "--yolo", "-p", prompt], { cwd });
       }
     }
     return formatSuccess(

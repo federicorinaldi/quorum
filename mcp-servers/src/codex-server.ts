@@ -6,7 +6,7 @@ const server = new McpServer({ name: "quorum-codex", version: "1.0.0" });
 
 server.tool(
   "codex_query",
-  "Send a read-only prompt to OpenAI Codex CLI (gpt-5.3-codex) and return the structured result",
+  "Send a read-only prompt to OpenAI Codex CLI (gpt-5.5-codex) and return the structured result",
   toolSchema,
   toolAnnotations,
   ({ prompt, workdir, timeout_ms }) => runCodex(prompt, workdir, timeout_ms)

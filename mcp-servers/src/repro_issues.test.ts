@@ -69,7 +69,7 @@ describe("repro identified issues", () => {
 
     expect(mockSpawn).toHaveBeenCalledWith(
       "gemini",
-      ["--yolo", "--output-format", "json", "-p", "-h"],
+      ["-m", "gemini-3.1-pro-preview", "--yolo", "--output-format", "json", "-p", "-h"],
       expect.anything()
     );
   });

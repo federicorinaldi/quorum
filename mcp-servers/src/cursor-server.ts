@@ -6,7 +6,7 @@ const server = new McpServer({ name: "quorum-cursor", version: "1.0.0" });
 
 server.tool(
   "cursor_query",
-  "Send a read-only prompt to Cursor CLI (Composer 1.5) and return the structured result",
+  "Send a read-only prompt to Cursor CLI (Composer 2) and return the structured result",
   toolSchema,
   toolAnnotations,
   ({ prompt, workdir, timeout_ms }) => runCursor(prompt, workdir, timeout_ms)

@@ -6,7 +6,7 @@ const server = new McpServer({ name: "quorum-gemini", version: "1.0.0" });
 
 server.tool(
   "gemini_query",
-  "Send a prompt to Google Gemini CLI (gemini-3-pro) and return the structured result",
+  "Send a prompt to Google Gemini CLI (gemini-3.1-pro) and return the structured result",
   toolSchema,
   geminiToolAnnotations,
   ({ prompt, workdir, timeout_ms }) => runGemini(prompt, workdir, timeout_ms)

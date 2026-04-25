@@ -91,7 +91,7 @@ cd quorum/mcp-servers && npm install
     "quorum-codex": {
       "command": "./mcp-servers/run.sh",
       "args": ["codex-server.ts"],
-      "description": "Cross-check: OpenAI Codex CLI wrapper (gpt-5.3-codex)"
+      "description": "Cross-check: OpenAI Codex CLI wrapper (gpt-5.5-codex)"
     },
     "quorum-copilot": {
       "command": "./mcp-servers/run.sh",
@@ -101,12 +101,12 @@ cd quorum/mcp-servers && npm install
     "quorum-cursor": {
       "command": "./mcp-servers/run.sh",
       "args": ["cursor-server.ts"],
-      "description": "Cross-check: Cursor CLI wrapper (Composer 1.5)"
+      "description": "Cross-check: Cursor CLI wrapper (Composer 2)"
     },
     "quorum-gemini": {
       "command": "./mcp-servers/run.sh",
       "args": ["gemini-server.ts"],
-      "description": "Cross-check: Google Gemini CLI wrapper (gemini-3-pro)"
+      "description": "Cross-check: Google Gemini CLI wrapper (gemini-3.1-pro)"
     },
     "quorum": {
       "command": "./mcp-servers/run.sh",
@@ -353,10 +353,10 @@ Use the quorum_query tool with prompt "Review the auth module" and agents ["code
 
 | Tool | Description |
 |------|-------------|
-| `codex_query` | Send a read-only prompt to OpenAI Codex CLI (gpt-5.3-codex) |
+| `codex_query` | Send a read-only prompt to OpenAI Codex CLI (gpt-5.5-codex) |
 | `copilot_query` | Send a read-only prompt to GitHub Copilot CLI (ACP mode with plain fallback) |
-| `cursor_query` | Send a read-only prompt to Cursor CLI (Composer 1.5) |
-| `gemini_query` | Send a read-only prompt to Google Gemini CLI (gemini-3-pro) |
+| `cursor_query` | Send a read-only prompt to Cursor CLI (Composer 2) |
+| `gemini_query` | Send a read-only prompt to Google Gemini CLI (gemini-3.1-pro) |
 | `quorum_query` | Fan out a prompt to multiple AI agents in parallel and return all results |
 
 ## Architecture

@@ -1,6 +1,6 @@
 ---
 name: gemini-agent
-description: Dispatches a prompt to Google Gemini CLI (gemini-3-pro) via the quorum-gemini MCP server and returns the raw structured result. Used exclusively by the /quorum skill for parallel fan-out.
+description: Dispatches a prompt to Google Gemini CLI (gemini-3.1-pro) via the quorum-gemini MCP server and returns the raw structured result. Used exclusively by the /quorum skill for parallel fan-out.
 tools: mcp__quorum-gemini__gemini_query
 model: claude-haiku-4-5
 permissionMode: default

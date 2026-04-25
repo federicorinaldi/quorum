@@ -3,7 +3,7 @@
     "quorum-codex": {
       "command": "./mcp-servers/run.sh",
       "args": ["codex-server.ts"],
-      "description": "Cross-check: OpenAI Codex CLI wrapper (gpt-5.3-codex)"
+      "description": "Cross-check: OpenAI Codex CLI wrapper (gpt-5.5-codex)"
     },
     "quorum-copilot": {
       "command": "./mcp-servers/run.sh",
@@ -13,12 +13,12 @@
     "quorum-cursor": {
       "command": "./mcp-servers/run.sh",
       "args": ["cursor-server.ts"],
-      "description": "Cross-check: Cursor CLI wrapper (Composer 1.5)"
+      "description": "Cross-check: Cursor CLI wrapper (Composer 2)"
     },
     "quorum-gemini": {
       "command": "./mcp-servers/run.sh",
       "args": ["gemini-server.ts"],
-      "description": "Cross-check: Google Gemini CLI wrapper (gemini-3-pro)"
+      "description": "Cross-check: Google Gemini CLI wrapper (gemini-3.1-pro)"
     },
     "quorum": {
       "command": "./mcp-servers/run.sh",

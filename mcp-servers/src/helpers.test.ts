@@ -544,7 +544,7 @@ describe("runCodex", () => {
 
     expect(mockSpawn).toHaveBeenCalledWith(
       "codex",
-      ["exec", "--sandbox", "read-only", "--", "analyze this"],
+      ["exec", "-m", "gpt-5.5-codex", "--sandbox", "read-only", "--", "analyze this"],
       expect.objectContaining({ cwd: expect.any(String) })
     );
 
